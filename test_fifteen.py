@@ -1,3 +1,4 @@
+from fifteen import *
 import pytest
 
 def test_is_solvable():
@@ -17,8 +18,10 @@ def test_get_empty_neighbor():
 def test_get_inv_count():
 	assert controllerBoard.get_inv_count() != 0
 	
-def test_model_init():
-	...
+def test_init():
+	assert BOARD_SIZE == 3
+	assert SQUARE_SIZE == 80
+	assert EMPTY_SQUARE == 9
 	
 if __name__ == '__main__':
 	pytest.main()
