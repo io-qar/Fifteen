@@ -1,13 +1,25 @@
+"""Игра пятнашки."""
+
 from random import shuffle
 from tkinter import Canvas, Tk
+import pydoc
 
 class Model:
+    """Класс, отвечающий за представление модели."""
+
     def __init__(self, b_size, s_size):
+        """Конструктор главного класса, определяющий основные константы.
+
+		:param BOARD_SIZE: размер игрового поля
+		:param SQUARE_SIZE: размер одного блока в пикселях
+		:param EMPTY_SQUARE: значение пустого блока.
+		"""
 		self.BOARD_SIZE = 3
 		self.SQUARE_SIZE = 80
 		self.EMPTY_SQUARE = BOARD_SIZE ** 2
 		
 	def is_solvable(self):
+        """Метод, определяющий, имеет ли головоломка решения."""
 		num_inversions = controllerBoard.get_inv_count()
 		if self.BOARD_SIZE % 2 != 0:
 			return num_inversions % 2 == 0
@@ -19,10 +31,14 @@ class Model:
 				return num_inversions % 2 == 0
         
     def info(self):
+        """Метод, выводящий основную мнформацию о доске."""
 		return "Ваше поле:" + str(self.BOARD_SIZE) + " на " + str(self.BOARD_SIZE) + ", и имеет размер " + str(self.SQUARE_SIZE)
 	
 class Controller:
+    """Класс контроллера,отвечающий за логику игры."""
+
 	def get_inv_count(self):
+        """Метод, считающий количество перемещений."""
 		inversions = 0
 		inversion_board = board[:]
 		inversion_board.remove(modelBoard.EMPTY_SQUARE)
@@ -36,6 +52,7 @@ class Controller:
 		return inversions
 	
     def get_empty_neighbor(self, cl_index):
+        """Метод, определяющий индекс пустой клетки в списке."""
 		empty_index = board.index(modelBoard.EMPTY_SQUARE)
 		abs_value = abs(empty_index - cl_index)
 		if abs_value == modelBoard.BOARD_SIZE:
@@ -47,6 +64,7 @@ class Controller:
 		return cl_index
 
 	def click(self, event):
+        """Обработчик нажатия."""
 		x, y = event.x, event.y
 
 		x //= modelBoard.SQUARE_SIZE
@@ -60,7 +78,10 @@ class Controller:
 			viewBoard.show_victory_plate()
 
 class View:
+    """Класс, отвечающий за представление игры."""
+
 	def draw_board(self):
+        """Метод, отрисовывающий новую доску."""
 		c.delete('all')
 		for i in range(modelBoard.BOARD_SIZE):
 			for j in range(modelBoard.BOARD_SIZE):
@@ -82,6 +103,7 @@ class View:
 					)
                     
 	def show_victory_plate(self):
+        """Метод, отрисовывающий победную надпись."""
 		c.create_rectangle(
 			modelBoard.SQUARE_SIZE / 5,
 			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 - 10 * modelBoard.BOARD_SIZE,
@@ -99,6 +121,7 @@ class View:
 		)
 
 	def show_error_plate(self):
+        """Метод, отрисовывающий надпись об ошибке."""
 		c.create_rectangle(
 			modelBoard.SQUARE_SIZE / 5,
 			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 - 10 * modelBoard.BOARD_SIZE,
