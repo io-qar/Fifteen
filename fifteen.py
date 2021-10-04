@@ -22,7 +22,7 @@ class Model:
 		return "Ваше поле:" + str(self.BOARD_SIZE) + " на " + str(self.BOARD_SIZE) + ", и имеет размер " + str(self.SQUARE_SIZE)
 	
 class Controller:
-	def get_inv_count():
+	def get_inv_count(self):
 		inversions = 0
 		inversion_board = board[:]
 		inversion_board.remove(modelBoard.EMPTY_SQUARE)
@@ -35,7 +35,7 @@ class Controller:
 					inversions += 1
 		return inversions
 	
-    def get_empty_neighbor(cl_index):
+    def get_empty_neighbor(self, cl_index):
 		empty_index = board.index(modelBoard.EMPTY_SQUARE)
 		abs_value = abs(empty_index - cl_index)
 		if abs_value == modelBoard.BOARD_SIZE:
