@@ -1,123 +1,127 @@
 from random import shuffle
 from tkinter import Canvas, Tk
 
-BOARD_SIZE = 3
-SQUARE_SIZE = 80
-EMPTY_SQUARE = BOARD_SIZE ** 2
-
-def get_inv_count():
-    inversions = 0
-    inversion_board = board[:]
-    inversion_board.remove(EMPTY_SQUARE)
-    
-    for i in range(len(inversion_board)):
-        first_item = inversion_board[i]
-        for j in range(i+1, len(inversion_board)):
-            second_item = inversion_board[j]
-            if first_item > second_item:
-                inversions += 1
-                
-    return inversions
-
-def is_solvable():
-    num_inversions = get_inv_count()
-    if BOARD_SIZE % 2 != 0:
-        return num_inversions % 2 == 0
-    else:
-        empty_square_row = BOARD_SIZE - (board.index(EMPTY_SQUARE) // BOARD_SIZE)
-        if empty_square_row % 2 == 0:
-            return num_inversions % 2 != 0
-        else:
-            return num_inversions % 2 == 0
-
-def get_empty_neighbor(cl_index):
-    empty_index = board.index(EMPTY_SQUARE)
-    abs_value = abs(empty_index - cl_index)
-    if abs_value == BOARD_SIZE:
-        return empty_index
-    elif abs_value == 1:
-        max_index = max(cl_index, empty_index)
-        if max_index % BOARD_SIZE != 0:
-            return empty_index
-        
-    return cl_index
-		
-def show_victory_plate():
-    c.create_rectangle(
-	    	SQUARE_SIZE / 5,
-            SQUARE_SIZE * BOARD_SIZE / 2 - 10 * BOARD_SIZE,
-	    	BOARD_SIZE * SQUARE_SIZE - SQUARE_SIZE / 5,
-	    	SQUARE_SIZE * BOARD_SIZE / 2 + 10 * BOARD_SIZE,
-	    	fill = '#000000',
-	    	outline = '#FFFFFF')
-    c.create_text(
-	    	SQUARE_SIZE * BOARD_SIZE / 2,
-	    	SQUARE_SIZE * BOARD_SIZE / 1.9,
-		    text = "Victory!",
-	    	font = "Helvetica {} bold".format(int(10 * BOARD_SIZE)),
-	    	fill = '#DC143C'
-    )
+class Model:
 	
-def show_error_plate(self):
+    def __init__(self, b_size, s_size):
+        self.BOARD_SIZE = 3
+        self.SQUARE_SIZE = 80
+        self.EMPTY_SQUARE = BOARD_SIZE ** 2
+        
+    def is_solvable():
+        num_inversions = get_inv_count()
+        if self.BOARD_SIZE % 2 != 0:
+            return num_inversions % 2 == 0
+        else:
+            empty_square_row = self.BOARD_SIZE - (board.index(EMPTY_SQUARE) // self.BOARD_SIZE)
+            if empty_square_row % 2 == 0:
+                return num_inversions % 2 != 0
+            else:
+                return num_inversions % 2 == 0
+        
+    def info(self):
+        return "Ваше поле:" + str(self.BOARD_SIZE) + " на " + str(self.BOARD_SIZE) + ", и имеет размер " + str(self.SQUARE_SIZE)
+	
+class Controller:
+	def get_inv_count():
+        inversions = 0
+		inversion_board = board[:]
+		inversion_board.remove(modelBoard.EMPTY_SQUARE)
+		
+		for i in range(len(inversion_board)):
+			first_item = inversion_board[i]
+			for j in range(i+1, len(inversion_board)):
+				second_item = inversion_board[j]
+				if first_item > second_item:
+					inversions += 1
+
+		return inversions
+	
+    def get_empty_neighbor(cl_index):
+        empty_index = board.index(modelBoard.EMPTY_SQUARE)
+		abs_value = abs(empty_index - cl_index)
+		if abs_value == modelBoard.BOARD_SIZE:
+			return empty_index
+		elif abs_value == 1:
+			max_index = max(cl_index, empty_index)
+			if max_index % modelBoard.BOARD_SIZE != 0:
+				return empty_index
+
+		return cl_index
+    
+    def click(self, event):
+		x, y = event.x, event.y
+
+		x //= modelBoard.SQUARE_SIZE
+		y //= modelBoard.SQUARE_SIZE
+
+		board_index = x + (y * modelBoard.BOARD_SIZE)
+		empty_index = controllerBoard.get_empty_neighbor(board_index)
+		board[board_index], board[empty_index] = board[empty_index], board[board_index]
+		viewBoard.draw_board()
+		if board == correct_board:
+			viewBoard.show_victory_plate()
+
+class View:
+	def draw_board(self):
+		c.delete('all')
+		for i in range(modelBoard.BOARD_SIZE):
+			for j in range(modelBoard.BOARD_SIZE):
+				index = str(board[modelBoard.BOARD_SIZE * i + j])
+				if index != str(modelBoard.EMPTY_SQUARE):
+					c.create_rectangle(
+						j * modelBoard.SQUARE_SIZE, i * modelBoard.SQUARE_SIZE,
+						j * modelBoard.SQUARE_SIZE + modelBoard.SQUARE_SIZE,
+						i * modelBoard.SQUARE_SIZE + modelBoard.SQUARE_SIZE,
+						fill = '#43ABC9',
+						outline = '#FFFFFF'
+					)
+					c.create_text(
+						j * modelBoard.SQUARE_SIZE + modelBoard.SQUARE_SIZE / 2,
+						i * modelBoard.SQUARE_SIZE + modelBoard.SQUARE_SIZE / 2,
+						text = index,
+						font = "Arial {} italic".format(int(modelBoard.SQUARE_SIZE / 4)),
+						fill = '#FFFFFF'
+					)
+                    
+     def show_victory_plate(self):
 		c.create_rectangle(
-			SQUARE_SIZE / 5,
-			SQUARE_SIZE * BOARD_SIZE / 2 - 10 * BOARD_SIZE,
-			BOARD_SIZE * SQUARE_SIZE - SQUARE_SIZE / 5,
-			SQUARE_SIZE * BOARD_SIZE / 2 + 10 * BOARD_SIZE,
+			modelBoard.SQUARE_SIZE / 5,
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 - 10 * modelBoard.BOARD_SIZE,
+			modelBoard.BOARD_SIZE * modelBoard.SQUARE_SIZE - modelBoard.SQUARE_SIZE / 5,
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 + 10 * modelBoard.BOARD_SIZE,
 			fill = '#000000',
 			outline = '#FFFFFF'
 		)
 		c.create_text(
-			SQUARE_SIZE * BOARD_SIZE / 2,
-			SQUARE_SIZE * BOARD_SIZE / 1.9,
-			text = "FATAL ERROR!",
-			font = "Helvetica {} bold".format(int(10 * BOARD_SIZE)),
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2,
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 1.9,
+			text = "Victory!",
+			font = "Helvetica {} bold".format(int(10 * modelBoard.BOARD_SIZE)),
 			fill = '#DC143C'
 		)
         
- def click(event):
-        x, y = event.x, event.y
-        
-        x //= SQUARE_SIZE
-        y //= SQUARE_SIZE
-        
-        board_index = x + (y * BOARD_SIZE)
-        empty_index = get_empty_neighbor(board_index)
-        board[board_index], board[empty_index] = board[empty_index], board[board_index]
-        draw_board()
-        if board == correct_board:
-            show_victory_plate()
-            
-def draw_board():
-    c.delete('all')
-   	for i in range(BOARD_SIZE):
-        for j in range(BOARD_SIZE):
-            index = str(board[BOARD_SIZE * i + j])
-            if index != str(EMPTY_SQUARE):
-                c.create_rectangle(
-			        j * SQUARE_SIZE, i * SQUARE_SIZE,
-                    j * SQUARE_SIZE + SQUARE_SIZE,
-                    i * SQUARE_SIZE + SQUARE_SIZE,
-                    fill = '#43ABC9',
-                    outline = '#FFFFFF'
-		        )
-                c.create_text(
-			        j * SQUARE_SIZE + SQUARE_SIZE / 2,
-                    i * SQUARE_SIZE + SQUARE_SIZE / 2,
-                    text = index,
-                    font = "Arial {} italic".format(int(SQUARE_SIZE / 4)),
-                    fill = '#FFFFFF'
-                )
+    def show_error_plate(self):
+		c.create_rectangle(
+			modelBoard.SQUARE_SIZE / 5,
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 - 10 * modelBoard.BOARD_SIZE,
+			modelBoard.BOARD_SIZE * modelBoard.SQUARE_SIZE - modelBoard.SQUARE_SIZE / 5,
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 + 10 * modelBoard.BOARD_SIZE,
+			fill = '#000000',
+			outline = '#FFFFFF'
+		)
+		c.create_text(
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2,
+			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 1.9,
+			text = "FATAL ERROR!",
+			font = "Helvetica {} bold".format(int(10 * modelBoard.BOARD_SIZE)),
+			fill = '#DC143C'
+		)
 
-class Model:
-	...
-	
-class Controller:
-	...
-	
-class View:
-	...
-
+modelBoard = Model(3, 80)
+controllerBoard = Controller()
+viewBoard = View()
+    
 root = Tk()
 c = Canvas(
 	root,
@@ -129,14 +133,13 @@ c = Canvas(
 c.pack()
 c.bind('<Button-1>', click)
 c.pack()
-root.mainloop()
 
-board = list(range(1, EMPTY_SQUARE + 1))
+board = list(range(1, modelBoard.EMPTY_SQUARE + 1))
 correct_board = board[:]
 shuffle(board)
 
 while not is_solvable():
     shuffle(board)
 	
-draw_board()
+viewBoard.draw_board()
 root.mainloop()
