@@ -2,43 +2,41 @@ from random import shuffle
 from tkinter import Canvas, Tk
 
 class Model:
-	
     def __init__(self, b_size, s_size):
-        self.BOARD_SIZE = 3
-        self.SQUARE_SIZE = 80
-        self.EMPTY_SQUARE = BOARD_SIZE ** 2
-        
-    def is_solvable():
-        num_inversions = get_inv_count()
-        if self.BOARD_SIZE % 2 != 0:
-            return num_inversions % 2 == 0
-        else:
-            empty_square_row = self.BOARD_SIZE - (board.index(EMPTY_SQUARE) // self.BOARD_SIZE)
-            if empty_square_row % 2 == 0:
-                return num_inversions % 2 != 0
-            else:
-                return num_inversions % 2 == 0
+		self.BOARD_SIZE = 3
+		self.SQUARE_SIZE = 80
+		self.EMPTY_SQUARE = BOARD_SIZE ** 2
+		
+	def is_solvable(self):
+		num_inversions = controllerBoard.get_inv_count()
+		if self.BOARD_SIZE % 2 != 0:
+			return num_inversions % 2 == 0
+		else:
+			empty_square_row = self.BOARD_SIZE - (board.index(self.EMPTY_SQUARE) // self.BOARD_SIZE)
+			if empty_square_row % 2 == 0:
+				return num_inversions % 2 != 0
+			else:
+				return num_inversions % 2 == 0
         
     def info(self):
-        return "Ваше поле:" + str(self.BOARD_SIZE) + " на " + str(self.BOARD_SIZE) + ", и имеет размер " + str(self.SQUARE_SIZE)
+		return "Ваше поле:" + str(self.BOARD_SIZE) + " на " + str(self.BOARD_SIZE) + ", и имеет размер " + str(self.SQUARE_SIZE)
 	
 class Controller:
 	def get_inv_count():
-        inversions = 0
+		inversions = 0
 		inversion_board = board[:]
 		inversion_board.remove(modelBoard.EMPTY_SQUARE)
-		
+
 		for i in range(len(inversion_board)):
 			first_item = inversion_board[i]
 			for j in range(i+1, len(inversion_board)):
 				second_item = inversion_board[j]
 				if first_item > second_item:
 					inversions += 1
-
 		return inversions
 	
     def get_empty_neighbor(cl_index):
-        empty_index = board.index(modelBoard.EMPTY_SQUARE)
+		empty_index = board.index(modelBoard.EMPTY_SQUARE)
 		abs_value = abs(empty_index - cl_index)
 		if abs_value == modelBoard.BOARD_SIZE:
 			return empty_index
@@ -46,10 +44,9 @@ class Controller:
 			max_index = max(cl_index, empty_index)
 			if max_index % modelBoard.BOARD_SIZE != 0:
 				return empty_index
-
 		return cl_index
-    
-    def click(self, event):
+
+	def click(self, event):
 		x, y = event.x, event.y
 
 		x //= modelBoard.SQUARE_SIZE
@@ -84,7 +81,7 @@ class View:
 						fill = '#FFFFFF'
 					)
                     
-     def show_victory_plate(self):
+	def show_victory_plate(self):
 		c.create_rectangle(
 			modelBoard.SQUARE_SIZE / 5,
 			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 - 10 * modelBoard.BOARD_SIZE,
@@ -100,8 +97,8 @@ class View:
 			font = "Helvetica {} bold".format(int(10 * modelBoard.BOARD_SIZE)),
 			fill = '#DC143C'
 		)
-        
-    def show_error_plate(self):
+
+	def show_error_plate(self):
 		c.create_rectangle(
 			modelBoard.SQUARE_SIZE / 5,
 			modelBoard.SQUARE_SIZE * modelBoard.BOARD_SIZE / 2 - 10 * modelBoard.BOARD_SIZE,
@@ -131,14 +128,14 @@ c = Canvas(
 )
 
 c.pack()
-c.bind('<Button-1>', click)
+c.bind('<Button-1>', controllerBoard.click)
 c.pack()
 
 board = list(range(1, modelBoard.EMPTY_SQUARE + 1))
 correct_board = board[:]
 shuffle(board)
 
-while not is_solvable():
+while not modelBoard.is_solvable():
     shuffle(board)
 	
 viewBoard.draw_board()
