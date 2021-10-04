@@ -11,5 +11,11 @@ def test_get_empty_neighbor():
 	"""
 	assert controllerBoard.get_empty_neighbor(1) != 0
 	
+def test_get_inv_count():
+	assert controllerBoard.get_inv_count() != 0
+	
+def test_model_init():
+	...
+	
 if __name__ == '__main__':
 	pytest.main()
